@@ -46,11 +46,10 @@ export default function RootLayout() {
     const redirect = params.get("redirect");
 
     if (redirect && redirect.startsWith("/")) {
-      const url = redirect.startsWith("/hamza-saleh-farms-main") ? redirect : `/hamza-saleh-farms-main${redirect}`;
-      const currentPath = window.location.pathname.replace(/\/$/, "") || "/hamza-saleh-farms-main";
+      const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
 
-      if (currentPath !== url) {
-        router.replace(url as any);
+      if (currentPath !== redirect) {
+        router.replace(redirect as any);
       }
     }
   }, [router]);
