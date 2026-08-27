@@ -40,7 +40,10 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build web version
-        run: pnpm build:web --output-dir web-build
+        run: pnpm build:web
+
+      - name: Create .nojekyll
+        run: touch ./web-build/.nojekyll
 
       - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -48,3 +51,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./web-build
+          enable_jekyll: false
+          force_orphan: true
