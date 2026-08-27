@@ -6,6 +6,12 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { ScreenContainer } from "@/components/screen-container";
 import { farmImages, farmName, farmTagline, mapUrl, phoneNumbers, services } from "@/lib/farm-data";
 
+const heroBadges = [
+  { icon: "verified", label: "حجز موثوق" },
+  { icon: "favorite", label: "جو فخم" },
+  { icon: "park", label: "طبيعة هادئة" },
+];
+
 async function openExternal(url: string) {
   try {
     await Linking.openURL(url);
@@ -35,6 +41,15 @@ export default function HomeScreen() {
             <Text style={styles.heroTitle}>{farmName}</Text>
             <Text style={styles.heroSubtitle}>{farmTagline}</Text>
           </View>
+        </View>
+
+        <View style={styles.featurePills}>
+          {heroBadges.map((badge) => (
+            <View key={badge.label} style={styles.featurePill}>
+              <MaterialIcons name={badge.icon as keyof typeof MaterialIcons.glyphMap} size={16} color="#173B29" />
+              <Text style={styles.featurePillText}>{badge.label}</Text>
+            </View>
+          ))}
         </View>
 
         <View style={styles.actionRow}>
@@ -91,6 +106,9 @@ const styles = StyleSheet.create({
   eyebrowText: { color: "#D8F0C5", fontSize: 13, fontWeight: "700" },
   heroTitle: { color: "#FFFFFF", fontSize: 30, fontWeight: "800", textAlign: "right" },
   heroSubtitle: { color: "#E6F1DB", fontSize: 15, marginTop: 4, textAlign: "right" },
+  featurePills: { flexDirection: "row-reverse", gap: 10, marginTop: -8, marginBottom: 4, zIndex: 2 },
+  featurePill: { flexDirection: "row-reverse", alignItems: "center", gap: 6, backgroundColor: "#FFFDF8", borderRadius: 14, paddingHorizontal: 12, paddingVertical: 8, borderWidth: 1, borderColor: "#E9E0D0", shadowColor: "#173B29", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.08, shadowRadius: 8, elevation: 2 },
+  featurePillText: { color: "#173B29", fontSize: 12, fontWeight: "700" },
   actionRow: { flexDirection: "row-reverse", gap: 8 },
   actionButton: { flex: 1, minHeight: 50, borderRadius: 16, flexDirection: "row-reverse", alignItems: "center", justifyContent: "center", gap: 6 },
   actionLabel: { color: "#FFFFFF", fontSize: 13, fontWeight: "800" },

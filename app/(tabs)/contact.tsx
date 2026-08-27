@@ -29,6 +29,13 @@ export default function ContactScreen() {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
         <Text style={styles.title}>تواصلوا معنا</Text>
         <Text style={styles.subtitle}>للحجز والاستفسار عن المواعيد والخدمات</Text>
+
+        <View style={styles.quickIcons}>
+          <View style={styles.quickItem}><MaterialIcons name="phone" size={22} color="#2B684A" /><Text style={styles.quickText}>اتصال</Text></View>
+          <View style={styles.quickItem}><MaterialIcons name="chat" size={22} color="#25A05A" /><Text style={styles.quickText}>واتساب</Text></View>
+          <View style={styles.quickItem}><MaterialIcons name="location-on" size={22} color="#2D8AA0" /><Text style={styles.quickText}>الموقع</Text></View>
+        </View>
+
         <View style={styles.brandCard}><MaterialIcons name="eco" size={28} color="#D9A441" /><Text style={styles.brandName}>{farmName}</Text><Text style={styles.brandText}>يسعدنا استقبالكم لقضاء أجمل الأوقات مع من تحبون.</Text></View>
         <ContactCard icon="phone" title="اتصال مباشر" subtitle={phoneNumbers.join("  •  ")} color="#2B684A" onPress={() => openExternal(`tel:${phoneNumbers[0].replace(/\s/g, "")}`)} />
         <ContactCard icon="chat" title="واتساب" subtitle="راسلونا للحجز والاستفسار" color="#25A05A" onPress={() => openExternal(`https://wa.me/${phoneNumbers[0].replace(/[+\s]/g, "")}`)} />
@@ -44,6 +51,9 @@ const styles = StyleSheet.create({
   content: { padding: 16, paddingBottom: 34, gap: 13 },
   title: { color: "#173B29", fontSize: 28, fontWeight: "800", textAlign: "right", marginTop: 8 },
   subtitle: { color: "#7D877E", fontSize: 14, textAlign: "right", marginBottom: 9 },
+  quickIcons: { flexDirection: "row-reverse", justifyContent: "space-between", gap: 8 },
+  quickItem: { flex: 1, backgroundColor: "#FFFDF8", borderRadius: 16, paddingVertical: 10, alignItems: "center", borderWidth: 1, borderColor: "#E9E0D0" },
+  quickText: { color: "#244B36", fontSize: 12, fontWeight: "700", marginTop: 4 },
   brandCard: { backgroundColor: "#173B29", borderRadius: 22, padding: 22, alignItems: "flex-end" },
   brandName: { color: "#FFFFFF", fontSize: 22, fontWeight: "800", marginTop: 9, textAlign: "right" },
   brandText: { color: "#D4E7D0", fontSize: 13, lineHeight: 20, marginTop: 6, textAlign: "right" },
