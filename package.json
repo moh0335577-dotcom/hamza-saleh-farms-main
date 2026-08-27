@@ -19,7 +19,7 @@
     "ios": "expo start --ios",
     "qr": "node scripts/generate_qr.mjs"
   },
-  "homepage": "https://moh0335577-dotcom.github.io/hamza-saleh-farms/",
+  "homepage": "https://moh0335577-dotcom.github.io/hamza-saleh-farms-main/",
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
     "@react-native-async-storage/async-storage": "^2.2.0",
