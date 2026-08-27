@@ -83,7 +83,6 @@ const config: ExpoConfig = {
     bundler: "metro",
     output: "static",
     favicon: "./assets/images/favicon.png",
-    publicPath: "/hamza-saleh-farms-main/",
   },
   plugins: [
     "expo-router",
