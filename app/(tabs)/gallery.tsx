@@ -3,11 +3,12 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 import { ScreenContainer } from "@/components/screen-container";
-import { farmImages } from "@/lib/farm-data";
+import { getFarmData } from "@/lib/farm-data";
 import { useLanguage } from "@/lib/language-context";
 
 export default function GalleryScreen() {
-  const { content, isRTL } = useLanguage();
+  const { content, isRTL, language } = useLanguage();
+  const farmData = getFarmData(language);
 
   return (
     <ScreenContainer containerClassName="bg-[#F7F3EA]" edges={["top", "left", "right"]}>
@@ -31,7 +32,7 @@ export default function GalleryScreen() {
         </View>
 
         <View style={[styles.grid, isRTL ? { flexDirection: "row-reverse" } : { flexDirection: "row" }]}> 
-          {farmImages.map((image) => (
+          {farmData.farmImages.map((image) => (
             <View key={image.title} style={styles.card}>
               <Image source={image.source} contentFit="cover" transition={250} style={styles.image} />
               <Text style={styles.caption}>{image.title}</Text>

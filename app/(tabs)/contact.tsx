@@ -3,7 +3,7 @@ import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-nati
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 import { ScreenContainer } from "@/components/screen-container";
-import { farmName, mapUrl, phoneNumbers } from "@/lib/farm-data";
+import { getFarmData, mapUrl, phoneNumbers } from "@/lib/farm-data";
 import { useLanguage } from "@/lib/language-context";
 
 async function openExternal(url: string, errorTitle: string, errorBody: string) {
@@ -25,7 +25,8 @@ function ContactCard({ icon, title, subtitle, onPress, color }: { icon: keyof ty
 }
 
 export default function ContactScreen() {
-  const { content, isRTL } = useLanguage();
+  const { content, isRTL, language } = useLanguage();
+  const farmData = getFarmData(language);
 
   return (
     <ScreenContainer containerClassName="bg-[#F7F3EA]" edges={["top", "left", "right"]}>
@@ -39,7 +40,7 @@ export default function ContactScreen() {
           <View style={styles.quickItem}><MaterialIcons name="location-on" size={22} color="#2D8AA0" /><Text style={styles.quickText}>{content.contact.quickItems[2]}</Text></View>
         </View>
 
-        <View style={styles.brandCard}><MaterialIcons name="eco" size={28} color="#D9A441" /><Text style={styles.brandName}>{farmName}</Text><Text style={styles.brandText}>{content.contact.welcome}</Text></View>
+        <View style={styles.brandCard}><MaterialIcons name="eco" size={28} color="#D9A441" /><Text style={styles.brandName}>{farmData.farmName}</Text><Text style={styles.brandText}>{content.contact.welcome}</Text></View>
         <ContactCard icon="phone" title={content.contact.directCall} subtitle={phoneNumbers.join("  •  ")} color="#2B684A" onPress={() => openExternal(`tel:${phoneNumbers[0].replace(/\s/g, "")}`, content.alert.openLinkFailedTitle, content.alert.openLinkFailedBody)} />
         <ContactCard icon="chat" title={content.contact.whatsapp} subtitle={content.contact.whatsappSubtitle} color="#25A05A" onPress={() => openExternal(`https://wa.me/${phoneNumbers[0].replace(/[+\s]/g, "")}`, content.alert.openLinkFailedTitle, content.alert.openLinkFailedBody)} />
         <ContactCard icon="location-on" title={content.contact.locationTitle} subtitle={content.contact.locationSubtitle} color="#2D8AA0" onPress={() => openExternal(mapUrl, content.alert.openLinkFailedTitle, content.alert.openLinkFailedBodySimple)} />

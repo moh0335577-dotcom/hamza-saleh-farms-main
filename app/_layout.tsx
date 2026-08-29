@@ -5,7 +5,8 @@ import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
-import { Platform, Pressable, Text } from "react-native";
+import { Platform, Pressable, Text, View } from "react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import "@/lib/_core/nativewind-pressable";
 import { ThemeProvider } from "@/lib/theme-provider";
 import {
@@ -29,21 +30,22 @@ export const unstable_settings = {
 
 function LanguageToggleButton() {
   const { language, setLanguage, content } = useLanguage();
+  const isArabic = language === "ar";
 
   return (
     <Pressable
-      onPress={() => setLanguage(language === "ar" ? "en" : "ar")}
+      onPress={() => setLanguage(isArabic ? "en" : "ar")}
       style={{
         position: "absolute",
-        top: 40,
+        top: 38,
         right: 18,
         zIndex: 100,
-        backgroundColor: "rgba(255,255,255,0.92)",
+        backgroundColor: "rgba(255,255,255,0.96)",
         borderColor: "#D9E1D6",
         borderWidth: 1,
         borderRadius: 999,
-        paddingHorizontal: 14,
-        paddingVertical: 9,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
         shadowColor: "#000",
         shadowOpacity: 0.08,
         shadowRadius: 10,
@@ -51,7 +53,12 @@ function LanguageToggleButton() {
         elevation: 5,
       }}
     >
-      <Text style={{ color: "#173B29", fontSize: 12, fontWeight: "800" }}>{content.home.languageToggle}</Text>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+        <MaterialIcons name="language" size={15} color="#173B29" />
+        <Text style={{ color: "#173B29", fontSize: 11.5, fontWeight: "800", letterSpacing: 0.3 }}>
+          {content.home.languageToggle}
+        </Text>
+      </View>
     </Pressable>
   );
 }

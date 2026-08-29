@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, Text, View, Pressable, Alert } from "react-nati
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 import { ScreenContainer } from "@/components/screen-container";
-import { farmImages, farmName, farmTagline, mapUrl, phoneNumbers, services } from "@/lib/farm-data";
+import { getFarmData, mapUrl, phoneNumbers } from "@/lib/farm-data";
 import { useLanguage } from "@/lib/language-context";
 
 async function openExternal(url: string, errorTitle: string, errorBody: string) {
@@ -25,7 +25,8 @@ function ActionButton({ icon, label, color, onPress }: { icon: keyof typeof Mate
 }
 
 export default function HomeScreen() {
-  const { content, isRTL } = useLanguage();
+  const { content, isRTL, language } = useLanguage();
+  const farmData = getFarmData(language);
   const heroBadges = content.home.heroBadges.map((badge, index) => ({
     icon: ["verified", "favorite", "park"][index] as keyof typeof MaterialIcons.glyphMap,
     label: badge.label,
@@ -35,12 +36,12 @@ export default function HomeScreen() {
     <ScreenContainer containerClassName="bg-[#F7F3EA]" edges={["top", "left", "right"]}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
         <View style={styles.heroCard}>
-          <Image source={farmImages[0].source} contentFit="cover" transition={300} style={styles.heroImage} />
+          <Image source={farmData.farmImages[0].source} contentFit="cover" transition={300} style={styles.heroImage} />
           <View style={styles.heroOverlay} />
           <View style={styles.heroCopy}>
             <View style={styles.eyebrow}><MaterialIcons name="eco" size={15} color="#D8F0C5" /><Text style={styles.eyebrowText}>{content.home.eyebrow}</Text></View>
-            <Text style={styles.heroTitle}>{farmName}</Text>
-            <Text style={styles.heroSubtitle}>{farmTagline}</Text>
+            <Text style={styles.heroTitle}>{farmData.farmName}</Text>
+            <Text style={styles.heroSubtitle}>{farmData.farmTagline}</Text>
           </View>
         </View>
 
@@ -67,7 +68,7 @@ export default function HomeScreen() {
 
         <View style={styles.sectionHeader}><Text style={styles.sectionTitle}>{content.home.whyChoose}</Text><Text style={styles.sectionHint}>{content.home.whyHint}</Text></View>
         <View style={styles.servicesGrid}>
-          {services.slice(0, 6).map((service) => (
+          {farmData.services.slice(0, 6).map((service) => (
             <View key={service.title} style={styles.serviceCard}>
               <View style={styles.serviceIcon}><MaterialIcons name={service.icon as keyof typeof MaterialIcons.glyphMap} size={22} color="#2B684A" /></View>
               <Text style={styles.serviceTitle}>{service.title}</Text>
@@ -78,7 +79,7 @@ export default function HomeScreen() {
 
         <View style={styles.sectionHeader}><Text style={styles.sectionTitle}>{content.home.galleryTitle}</Text><Text style={styles.sectionHint}>{content.home.galleryHint}</Text></View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.galleryRow}>
-          {farmImages.slice(1, 6).map((image) => (
+          {farmData.farmImages.slice(1, 6).map((image) => (
             <View key={image.title} style={styles.galleryCard}>
               <Image source={image.source} contentFit="cover" transition={200} style={styles.galleryImage} />
               <Text style={styles.galleryTitle}>{image.title}</Text>
