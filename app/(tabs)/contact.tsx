@@ -4,12 +4,13 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { farmName, mapUrl, phoneNumbers } from "@/lib/farm-data";
+import { useLanguage } from "@/lib/language-context";
 
-async function openExternal(url: string) {
+async function openExternal(url: string, errorTitle: string, errorBody: string) {
   try {
     await Linking.openURL(url);
   } catch {
-    Alert.alert("تعذر فتح الرابط", "يرجى المحاولة مرة أخرى.");
+    Alert.alert(errorTitle, errorBody);
   }
 }
 
@@ -24,24 +25,26 @@ function ContactCard({ icon, title, subtitle, onPress, color }: { icon: keyof ty
 }
 
 export default function ContactScreen() {
+  const { content, isRTL } = useLanguage();
+
   return (
     <ScreenContainer containerClassName="bg-[#F7F3EA]" edges={["top", "left", "right"]}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
-        <Text style={styles.title}>تواصلوا معنا</Text>
-        <Text style={styles.subtitle}>للحجز والاستفسار عن المواعيد والخدمات</Text>
+        <Text style={styles.title}>{content.contact.title}</Text>
+        <Text style={styles.subtitle}>{content.contact.subtitle}</Text>
 
-        <View style={styles.quickIcons}>
-          <View style={styles.quickItem}><MaterialIcons name="phone" size={22} color="#2B684A" /><Text style={styles.quickText}>اتصال</Text></View>
-          <View style={styles.quickItem}><MaterialIcons name="chat" size={22} color="#25A05A" /><Text style={styles.quickText}>واتساب</Text></View>
-          <View style={styles.quickItem}><MaterialIcons name="location-on" size={22} color="#2D8AA0" /><Text style={styles.quickText}>الموقع</Text></View>
+        <View style={[styles.quickIcons, isRTL ? { flexDirection: "row-reverse" } : { flexDirection: "row" }]}> 
+          <View style={styles.quickItem}><MaterialIcons name="phone" size={22} color="#2B684A" /><Text style={styles.quickText}>{content.contact.quickItems[0]}</Text></View>
+          <View style={styles.quickItem}><MaterialIcons name="chat" size={22} color="#25A05A" /><Text style={styles.quickText}>{content.contact.quickItems[1]}</Text></View>
+          <View style={styles.quickItem}><MaterialIcons name="location-on" size={22} color="#2D8AA0" /><Text style={styles.quickText}>{content.contact.quickItems[2]}</Text></View>
         </View>
 
-        <View style={styles.brandCard}><MaterialIcons name="eco" size={28} color="#D9A441" /><Text style={styles.brandName}>{farmName}</Text><Text style={styles.brandText}>يسعدنا استقبالكم لقضاء أجمل الأوقات مع من تحبون.</Text></View>
-        <ContactCard icon="phone" title="اتصال مباشر" subtitle={phoneNumbers.join("  •  ")} color="#2B684A" onPress={() => openExternal(`tel:${phoneNumbers[0].replace(/\s/g, "")}`)} />
-        <ContactCard icon="chat" title="واتساب" subtitle="راسلونا للحجز والاستفسار" color="#25A05A" onPress={() => openExternal(`https://wa.me/${phoneNumbers[0].replace(/[+\s]/g, "")}`)} />
-        <ContactCard icon="location-on" title="موقع المزرعة" subtitle="فتح الموقع في خرائط Google" color="#2D8AA0" onPress={() => openExternal(mapUrl)} />
-        <View style={styles.note}><MaterialIcons name="info-outline" size={21} color="#A26A23" /><Text style={styles.noteText}>يُفضّل التواصل مسبقًا لتنسيق الحجز وتجهيز المناسبة عند الحاجة.</Text></View>
-        <Text style={styles.footer}>الراحة • الخصوصية • الفخامة</Text>
+        <View style={styles.brandCard}><MaterialIcons name="eco" size={28} color="#D9A441" /><Text style={styles.brandName}>{farmName}</Text><Text style={styles.brandText}>{content.contact.welcome}</Text></View>
+        <ContactCard icon="phone" title={content.contact.directCall} subtitle={phoneNumbers.join("  •  ")} color="#2B684A" onPress={() => openExternal(`tel:${phoneNumbers[0].replace(/\s/g, "")}`, content.alert.openLinkFailedTitle, content.alert.openLinkFailedBody)} />
+        <ContactCard icon="chat" title={content.contact.whatsapp} subtitle={content.contact.whatsappSubtitle} color="#25A05A" onPress={() => openExternal(`https://wa.me/${phoneNumbers[0].replace(/[+\s]/g, "")}`, content.alert.openLinkFailedTitle, content.alert.openLinkFailedBody)} />
+        <ContactCard icon="location-on" title={content.contact.locationTitle} subtitle={content.contact.locationSubtitle} color="#2D8AA0" onPress={() => openExternal(mapUrl, content.alert.openLinkFailedTitle, content.alert.openLinkFailedBodySimple)} />
+        <View style={styles.note}><MaterialIcons name="info-outline" size={21} color="#A26A23" /><Text style={styles.noteText}>{content.contact.note}</Text></View>
+        <Text style={styles.footer}>{content.contact.footer}</Text>
       </ScrollView>
     </ScreenContainer>
   );

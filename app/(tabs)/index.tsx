@@ -5,18 +5,13 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { farmImages, farmName, farmTagline, mapUrl, phoneNumbers, services } from "@/lib/farm-data";
+import { useLanguage } from "@/lib/language-context";
 
-const heroBadges = [
-  { icon: "verified", label: "حجز موثوق" },
-  { icon: "favorite", label: "جو فخم" },
-  { icon: "park", label: "طبيعة هادئة" },
-];
-
-async function openExternal(url: string) {
+async function openExternal(url: string, errorTitle: string, errorBody: string) {
   try {
     await Linking.openURL(url);
   } catch {
-    Alert.alert("تعذر فتح الرابط", "يرجى المحاولة مرة أخرى أو التواصل هاتفيًا.");
+    Alert.alert(errorTitle, errorBody);
   }
 }
 
@@ -30,6 +25,12 @@ function ActionButton({ icon, label, color, onPress }: { icon: keyof typeof Mate
 }
 
 export default function HomeScreen() {
+  const { content, isRTL } = useLanguage();
+  const heroBadges = content.home.heroBadges.map((badge, index) => ({
+    icon: ["verified", "favorite", "park"][index] as keyof typeof MaterialIcons.glyphMap,
+    label: badge.label,
+  }));
+
   return (
     <ScreenContainer containerClassName="bg-[#F7F3EA]" edges={["top", "left", "right"]}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
@@ -37,34 +38,34 @@ export default function HomeScreen() {
           <Image source={farmImages[0].source} contentFit="cover" transition={300} style={styles.heroImage} />
           <View style={styles.heroOverlay} />
           <View style={styles.heroCopy}>
-            <View style={styles.eyebrow}><MaterialIcons name="eco" size={15} color="#D8F0C5" /><Text style={styles.eyebrowText}>وجهتكم الهادئة وسط الطبيعة</Text></View>
+            <View style={styles.eyebrow}><MaterialIcons name="eco" size={15} color="#D8F0C5" /><Text style={styles.eyebrowText}>{content.home.eyebrow}</Text></View>
             <Text style={styles.heroTitle}>{farmName}</Text>
             <Text style={styles.heroSubtitle}>{farmTagline}</Text>
           </View>
         </View>
 
-        <View style={styles.featurePills}>
+        <View style={[styles.featurePills, isRTL ? { flexDirection: "row-reverse" } : { flexDirection: "row" }]}> 
           {heroBadges.map((badge) => (
             <View key={badge.label} style={styles.featurePill}>
-              <MaterialIcons name={badge.icon as keyof typeof MaterialIcons.glyphMap} size={16} color="#173B29" />
+              <MaterialIcons name={badge.icon} size={16} color="#173B29" />
               <Text style={styles.featurePillText}>{badge.label}</Text>
             </View>
           ))}
         </View>
 
-        <View style={styles.actionRow}>
-          <ActionButton icon="phone" label="اتصل الآن" color="#2B684A" onPress={() => openExternal(`tel:${phoneNumbers[0].replace(/\s/g, "")}`)} />
-          <ActionButton icon="chat" label="واتساب" color="#25A05A" onPress={() => openExternal(`https://wa.me/${phoneNumbers[0].replace(/[+\s]/g, "")}`)} />
-          <ActionButton icon="location-on" label="الموقع" color="#2D8AA0" onPress={() => openExternal(mapUrl)} />
+        <View style={[styles.actionRow, isRTL ? { flexDirection: "row-reverse" } : { flexDirection: "row" }]}> 
+          <ActionButton icon="phone" label={content.home.callNow} color="#2B684A" onPress={() => openExternal(`tel:${phoneNumbers[0].replace(/\s/g, "")}`, content.alert.openLinkFailedTitle, content.alert.openLinkFailedBody)} />
+          <ActionButton icon="chat" label={content.home.whatsapp} color="#25A05A" onPress={() => openExternal(`https://wa.me/${phoneNumbers[0].replace(/[+\s]/g, "")}`, content.alert.openLinkFailedTitle, content.alert.openLinkFailedBody)} />
+          <ActionButton icon="location-on" label={content.home.location} color="#2D8AA0" onPress={() => openExternal(mapUrl, content.alert.openLinkFailedTitle, content.alert.openLinkFailedBodySimple)} />
         </View>
 
         <View style={styles.introCard}>
-          <Text style={styles.sectionKicker}>أجمل الأوقات تبدأ من هنا</Text>
-          <Text style={styles.introTitle}>خصوصية، هدوء وطبيعة جميلة</Text>
-          <Text style={styles.bodyText}>مزارع خاصة مجهزة للعائلات والأصدقاء والمناسبات، مع مسابح خاصة وجلسات مريحة ومساحات خضراء تمنحكم يومًا مختلفًا بعيدًا عن الضجيج.</Text>
+          <Text style={styles.sectionKicker}>{content.home.introKicker}</Text>
+          <Text style={styles.introTitle}>{content.home.introTitle}</Text>
+          <Text style={styles.bodyText}>{content.home.introBody}</Text>
         </View>
 
-        <View style={styles.sectionHeader}><Text style={styles.sectionTitle}>لماذا تختارون مزارعنا؟</Text><Text style={styles.sectionHint}>خدمات بسيطة لراحة أكبر</Text></View>
+        <View style={styles.sectionHeader}><Text style={styles.sectionTitle}>{content.home.whyChoose}</Text><Text style={styles.sectionHint}>{content.home.whyHint}</Text></View>
         <View style={styles.servicesGrid}>
           {services.slice(0, 6).map((service) => (
             <View key={service.title} style={styles.serviceCard}>
@@ -75,7 +76,7 @@ export default function HomeScreen() {
           ))}
         </View>
 
-        <View style={styles.sectionHeader}><Text style={styles.sectionTitle}>لمحات من المزرعة</Text><Text style={styles.sectionHint}>اسحب للاطلاع</Text></View>
+        <View style={styles.sectionHeader}><Text style={styles.sectionTitle}>{content.home.galleryTitle}</Text><Text style={styles.sectionHint}>{content.home.galleryHint}</Text></View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.galleryRow}>
           {farmImages.slice(1, 6).map((image) => (
             <View key={image.title} style={styles.galleryCard}>
@@ -87,10 +88,10 @@ export default function HomeScreen() {
 
         <View style={styles.callout}>
           <MaterialIcons name="event-available" size={26} color="#D9A441" />
-          <View style={styles.calloutCopy}><Text style={styles.calloutTitle}>جاهزون لاستقبال مناسباتكم</Text><Text style={styles.calloutText}>للحجز والاستفسار تواصلوا معنا مباشرة عبر الهاتف أو واتساب.</Text></View>
+          <View style={styles.calloutCopy}><Text style={styles.calloutTitle}>{content.home.readyTitle}</Text><Text style={styles.calloutText}>{content.home.readyText}</Text></View>
         </View>
 
-        <Text style={styles.footerPhrase}>الراحة • الخصوصية • الفخامة</Text>
+        <Text style={styles.footerPhrase}>{content.home.footer}</Text>
       </ScrollView>
     </ScreenContainer>
   );

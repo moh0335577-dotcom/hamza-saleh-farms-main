@@ -5,7 +5,7 @@ import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
-import { Platform } from "react-native";
+import { Platform, Pressable, Text } from "react-native";
 import "@/lib/_core/nativewind-pressable";
 import { ThemeProvider } from "@/lib/theme-provider";
 import {
@@ -18,6 +18,7 @@ import type { EdgeInsets, Metrics, Rect } from "react-native-safe-area-context";
 
 import { trpc, createTRPCClient } from "@/lib/trpc";
 import { initManusRuntime, subscribeSafeAreaInsets } from "@/lib/_core/manus-runtime";
+import { LanguageProvider, useLanguage } from "@/lib/language-context";
 
 const DEFAULT_WEB_INSETS: EdgeInsets = { top: 0, right: 0, bottom: 0, left: 0 };
 const DEFAULT_WEB_FRAME: Rect = { x: 0, y: 0, width: 0, height: 0 };
@@ -25,6 +26,35 @@ const DEFAULT_WEB_FRAME: Rect = { x: 0, y: 0, width: 0, height: 0 };
 export const unstable_settings = {
   anchor: "(tabs)",
 };
+
+function LanguageToggleButton() {
+  const { language, setLanguage, content } = useLanguage();
+
+  return (
+    <Pressable
+      onPress={() => setLanguage(language === "ar" ? "en" : "ar")}
+      style={{
+        position: "absolute",
+        top: 40,
+        right: 18,
+        zIndex: 100,
+        backgroundColor: "rgba(255,255,255,0.92)",
+        borderColor: "#D9E1D6",
+        borderWidth: 1,
+        borderRadius: 999,
+        paddingHorizontal: 14,
+        paddingVertical: 9,
+        shadowColor: "#000",
+        shadowOpacity: 0.08,
+        shadowRadius: 10,
+        shadowOffset: { width: 0, height: 6 },
+        elevation: 5,
+      }}
+    >
+      <Text style={{ color: "#173B29", fontSize: 12, fontWeight: "800" }}>{content.home.languageToggle}</Text>
+    </Pressable>
+  );
+}
 
 export default function RootLayout() {
   const router = useRouter();
@@ -96,18 +126,21 @@ export default function RootLayout() {
 
   const content = (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <trpc.Provider client={trpcClient} queryClient={queryClient}>
-        <QueryClientProvider client={queryClient}>
-          {/* Default to hiding native headers so raw route segments don't appear (e.g. "(tabs)", "products/[id]"). */}
-          {/* If a screen needs the native header, explicitly enable it and set a human title via Stack.Screen options. */}
-          {/* in order for ios apps tab switching to work properly, use presentation: "fullScreenModal" for login page, whenever you decide to use presentation: "modal*/}
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="oauth/callback" />
-          </Stack>
-          <StatusBar style="auto" />
-        </QueryClientProvider>
-      </trpc.Provider>
+      <LanguageProvider>
+        <trpc.Provider client={trpcClient} queryClient={queryClient}>
+          <QueryClientProvider client={queryClient}>
+            <LanguageToggleButton />
+            {/* Default to hiding native headers so raw route segments don't appear (e.g. "(tabs)", "products/[id]"). */}
+            {/* If a screen needs the native header, explicitly enable it and set a human title via Stack.Screen options. */}
+            {/* in order for ios apps tab switching to work properly, use presentation: "fullScreenModal" for login page, whenever you decide to use presentation: "modal*/}
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="(tabs)" />
+              <Stack.Screen name="oauth/callback" />
+            </Stack>
+            <StatusBar style="auto" />
+          </QueryClientProvider>
+        </trpc.Provider>
+      </LanguageProvider>
     </GestureHandlerRootView>
   );
 

@@ -4,30 +4,33 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { farmImages } from "@/lib/farm-data";
+import { useLanguage } from "@/lib/language-context";
 
 export default function GalleryScreen() {
+  const { content, isRTL } = useLanguage();
+
   return (
     <ScreenContainer containerClassName="bg-[#F7F3EA]" edges={["top", "left", "right"]}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
-        <Text style={styles.title}>معرض المزرعة</Text>
-        <Text style={styles.subtitle}>تعرّفوا على أجواء المسبح والجلسات والبساتين</Text>
+        <Text style={styles.title}>{content.gallery.title}</Text>
+        <Text style={styles.subtitle}>{content.gallery.subtitle}</Text>
 
-        <View style={styles.badgeRow}>
+        <View style={[styles.badgeRow, isRTL ? { flexDirection: "row-reverse" } : { flexDirection: "row" }]}> 
           <View style={styles.badge}>
             <MaterialIcons name="photo-library" size={18} color="#173B29" />
-            <Text style={styles.badgeText}>صور حية</Text>
+            <Text style={styles.badgeText}>{content.gallery.badges[0]}</Text>
           </View>
           <View style={styles.badge}>
             <MaterialIcons name="park" size={18} color="#173B29" />
-            <Text style={styles.badgeText}>طبيعة</Text>
+            <Text style={styles.badgeText}>{content.gallery.badges[1]}</Text>
           </View>
           <View style={styles.badge}>
             <MaterialIcons name="eco" size={18} color="#173B29" />
-            <Text style={styles.badgeText}>هدوء</Text>
+            <Text style={styles.badgeText}>{content.gallery.badges[2]}</Text>
           </View>
         </View>
 
-        <View style={styles.grid}>
+        <View style={[styles.grid, isRTL ? { flexDirection: "row-reverse" } : { flexDirection: "row" }]}> 
           {farmImages.map((image) => (
             <View key={image.title} style={styles.card}>
               <Image source={image.source} contentFit="cover" transition={250} style={styles.image} />
